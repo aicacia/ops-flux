@@ -1,0 +1,16 @@
+controller:
+  resources:
+    requests:
+      cpu: 15m
+      memory: 128Mi
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 16
+    targetCPUUtilizationPercentage: 90
+    targetMemoryUtilizationPercentage: 90
+
+  defaultBackendService: false
+
+defaultBackend:
+  enabled: false

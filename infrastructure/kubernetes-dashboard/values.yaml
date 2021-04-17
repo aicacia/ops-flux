@@ -1,0 +1,19 @@
+ingress:
+  enabled: true
+  annotations:
+    certmanager.k8s.io/cluster-issuer: letsencrypt
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/secure-backends: "true"
+  tls:
+    - hosts:
+        - kubernetes-dashboard.aicacia.com
+      secretName: kubernetes-dashboard-aicacia-com-tls
+  hosts:
+    - kubernetes-dashboard.aicacia.com
+resources:
+  requests:
+    cpu: 15m
+    memory: 105M
+  limits:
+    cpu: 100m
+    memory: 200M
