@@ -49,6 +49,43 @@ spec:
   path: ./infrastructure/controllers
   prune: true
   wait: true
+  patches:
+    - patch: |
+        - op: add
+          path: /spec/values/controller/hostNetwork
+          value: "true"
+        - op: add
+          path: /spec/values/controller/kind
+          value: DaemonSet
+      target:
+        kind: HelmRelease
+        name: ingress-nginx
+    - patch: |
+        - op: replace
+          path: /spec/values/ingress/annotations/kubernetes.io~1tls-acme
+          value: "false"
+        - op: replace
+          path: /spec/values/ingress/hosts/0
+          value: kubernetes-dashboard.docker.internal
+        - op: replace
+          path: /spec/values/ingress/tls/0/hosts/0
+          value: kubernetes-dashboard.docker.internal
+      target:
+        kind: HelmRelease
+        name: kubernetes-dashboard
+    - patch: |
+        - op: add
+          path: /spec/values/dashboard/ingress/annotations/kubernetes.io~1tls-acme
+          value: "false"
+        - op: replace
+          path: /spec/values/dashboard/ingress/tls/0/hosts/0
+          value: goldilocks.docker.internal
+        - op: replace
+          path: /spec/values/dashboard/ingress/hosts/0/host
+          value: goldilocks.docker.internal
+      target:
+        kind: HelmRelease
+        name: goldilocks
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
@@ -70,7 +107,8 @@ spec:
     - patch: |
         - op: replace
           path: /spec/acme/server
-          value: https://acme-v02.api.letsencrypt.org/directory
+          value: https://acme-staging-v02.api.letsencrypt.org/directory
       target:
         kind: ClusterIssuer
         name: letsencrypt
+        
