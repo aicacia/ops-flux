@@ -11,13 +11,17 @@ spec:
         kind: HelmRepository
         name: kubernetes-dashboard
         namespace: flux-system
-      version: 5.10.x
+      version: 7.0.x
   interval: 1h0m0s
   install:
     remediation:
       retries: 3
   releaseName: kubernetes-dashboard
   values:
+    nginx:
+      enabled: false
+    cert-manager:
+      enabled: false
     ingress:
       enabled: true
       annotations:

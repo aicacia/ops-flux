@@ -11,7 +11,7 @@ spec:
         kind: HelmRepository
         name: jetstack
         namespace: flux-system
-      version: 1.11.x
+      version: 1.12.x
   interval: 1h0m0s
   releaseName: cert-manager
   values:
@@ -21,4 +21,3 @@ spec:
     ingressShim:
       defaultIssuerName: letsencrypt
       defaultIssuerKind: ClusterIssuer
-
