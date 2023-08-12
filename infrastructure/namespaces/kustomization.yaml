@@ -4,3 +4,4 @@ resources:
   - api.yaml
   - kube-public.yaml
   - kube-system.yaml
+  - ui.yaml
