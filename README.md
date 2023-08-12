@@ -28,8 +28,7 @@ kubeseal --fetch-cert --controller-name=sealed-secrets --controller-namespace=ku
 ## Docker creds
 
 ```bash
-kubectl create secret generic regcred \
-    --namespace kube-system \
+kubectl create secret generic docker-registry \
     --from-file=.dockerconfigjson=/home/$USER/.docker/config.json \
     --type=kubernetes.io/dockerconfigjson \
     --dry-run=client \
