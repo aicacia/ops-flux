@@ -29,6 +29,7 @@ kubeseal --fetch-cert --controller-name=sealed-secrets --controller-namespace=ku
 
 ```bash
 kubectl create secret generic docker-registry \
+    --namespace api \
     --from-file=.dockerconfigjson=/home/$USER/.docker/config.json \
     --type=kubernetes.io/dockerconfigjson \
     --dry-run=client \

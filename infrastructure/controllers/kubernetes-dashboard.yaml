@@ -22,6 +22,8 @@ spec:
       enabled: false
     cert-manager:
       enabled: false
+    metrics-server:
+      enabled: false
     ingress:
       enabled: true
       annotations:
