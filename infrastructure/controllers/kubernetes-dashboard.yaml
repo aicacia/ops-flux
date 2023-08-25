@@ -11,7 +11,7 @@ spec:
         kind: HelmRepository
         name: kubernetes-dashboard
         namespace: flux-system
-      version: 7.0.x
+      version: 7.0.0-alpha0
   interval: 1h0m0s
   install:
     remediation:
@@ -28,9 +28,12 @@ spec:
       ingress:
         enabled: true
         hosts:
-          - kubernetes-dashboard.aicacia.com
+          - kubernetes-dashboard.utility.com
         ingressClassName: nginx
-        secretName: kubernetes-dashboard-aicacia-com-tls
+        secretName: kubernetes-dashboard-utility-com-tls
         issuer:
           name: letsencrypt
           scope: cluster
+        annotations:
+          kubernetes.io/tls-acme: "true"
+          nginx.ingress.kubernetes.io/secure-backends: "true"
