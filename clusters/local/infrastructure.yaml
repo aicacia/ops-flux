@@ -1,0 +1,108 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-namespaces
+  namespace: flux-system
+spec:
+  interval: 10m
+  retryInterval: 1m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/namespaces
+  prune: true
+  wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-sources
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infra-namespaces
+  interval: 10m
+  retryInterval: 1m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/sources
+  prune: true
+  wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-configs
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infra-namespaces
+  interval: 10m
+  retryInterval: 1m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/configs
+  prune: true
+  patches:
+    - patch: |
+        - op: replace
+          path: /spec/acme/server
+          value: https://acme-staging-v02.api.letsencrypt.org/directory
+      target:
+        kind: ClusterIssuer
+        name: letsencrypt
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-controllers
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infra-sources
+    - name: infra-configs
+  interval: 10m
+  retryInterval: 1m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/controllers
+  prune: true
+  wait: true
+  patches:
+    - patch: |
+        - op: replace
+          path: /spec/values/app/ingress/annotations/kubernetes.io~1tls-acme
+          value: "false"
+        - op: replace
+          path: /spec/values/app/ingress/hosts/0
+          value: kubernetes-dashboard.docker.internal
+        - op: replace
+          path: /spec/values/api/containers/args
+          value:
+            - --enable-insecure-login=true
+            - --disable-settings-authorizer=true
+            - --enable-skip-login=true
+      target:
+        kind: HelmRelease
+        name: kubernetes-dashboard
+    - patch: |
+        - op: add
+          path: /spec/values/dashboard/ingress/annotations/kubernetes.io~1tls-acme
+          value: "false"
+        - op: replace
+          path: /spec/values/dashboard/ingress/tls/0/hosts/0
+          value: goldilocks.docker.internal
+        - op: replace
+          path: /spec/values/dashboard/ingress/hosts/0/host
+          value: goldilocks.docker.internal
+      target:
+        kind: HelmRelease
+        name: goldilocks

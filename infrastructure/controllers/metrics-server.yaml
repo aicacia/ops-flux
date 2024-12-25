@@ -1,0 +1,25 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: metrics-server
+  namespace: kube-system
+spec:
+  chart:
+    spec:
+      chart: metrics-server
+      sourceRef:
+        kind: HelmRepository
+        name: metrics-server
+        namespace: flux-system
+      version: 3.12.x
+  interval: 1h0m0s
+  install:
+    remediation:
+      retries: 3
+  releaseName: metrics-server
+  values:
+    apiService:
+      create: true
+    args:
+      - "--kubelet-preferred-address-types=InternalIP"
+      - "--kubelet-insecure-tls=true"
