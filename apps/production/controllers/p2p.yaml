@@ -1,0 +1,23 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: p2p
+  namespace: api
+spec:
+  chart:
+    spec:
+      chart: p2p
+      sourceRef:
+        kind: HelmRepository
+        name: p2p
+        namespace: flux-system
+      version: 0.1.x
+  interval: 1h0m0s
+  install:
+    remediation:
+      retries: 3
+  releaseName: p2p
+  values:
+    image:
+      tag: latest
+    envSecret: p2p-api-env-secret
