@@ -5,4 +5,4 @@ metadata:
   namespace: flux-system
 spec:
   interval: 30m
-  url: https://aicacia.github.io/auth
+  url: https://aicacia.github.io/rs-auth
